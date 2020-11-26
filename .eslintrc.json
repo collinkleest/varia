@@ -17,11 +17,11 @@
 		"ecmaVersion": 2019
 	},
 	"rules": {
-        "indent": ["error", "tab"],
+        // "indent": ["error", "tab"],
         "semi": ["error", "always"],
         "prefer-const": "error",
         "no-empty-function": "error",
         "block-scoped-var": "warn",
-        "class-methods-use-this": "warn"
+		"class-methods-use-this": "warn"
 	}
 }
