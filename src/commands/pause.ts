@@ -1,7 +1,10 @@
+import { Message } from "discord.js";
+import { VariaClient } from "../typings/VariaClient";
+
 module.exports = {
     name: 'pause',
     description: 'Pause a song that is currently playing',
-    async execute(message: any, args: string[], client:any) {
+    async execute(message: Message, args: string[], client: VariaClient) {
         if (client.dispatcher){
             if (client.dispatcher.paused){
               message.reply(`Song is already paused`);

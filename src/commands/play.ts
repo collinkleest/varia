@@ -1,11 +1,12 @@
-import * as Discord from "discord.js";
+import { Message } from "discord.js";
+import { VariaClient } from "../typings/VariaClient";
 
 const ytdl = require('ytdl-core');
 const { getSongByName } = require('../utils/yt-factory'); 
 module.exports = {
     name: 'play',
     description: 'Play a song with a given YouTube url < yt_uri : string>',
-    async execute(message: Discord.Message, args: string[], client:any) {
+    async execute(message: Message, args: string[], client: VariaClient) {
         if (message.member == null){return;}
         if (args.length == 0){
             message.reply('pass a song name or YouTube url');
@@ -25,7 +26,7 @@ module.exports = {
                 if (!client.connection){
                     if (message.member.voice.channel){
                         client.connection = await message.member.voice.channel.join();
-                        client.dispatcher = client.connection.play(ytdl(ytData[1]), {filter: 'audioonly'});
+                        client.dispatcher = client.connection.play(ytdl(ytData[1]));
                         message.channel.send(`<@${userId}> played ${ytData[0]}!`);
                         console.log(`${userName} played ${ytData[0]}`);
                     } else {

@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
 import { getSongByName } from "../utils/yt-factory";
 

@@ -1,7 +1,9 @@
+import { Message } from "discord.js";
+
 module.exports = {
   name: 'ping',
   description: 'Ping!',
-  execute(message: any, args: string[]) {
+  execute(message: Message, args: string[]) {
     message.channel.send(`<@${message.author.id}> pinged varia!`);
   }
 };
