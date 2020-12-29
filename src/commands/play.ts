@@ -27,6 +27,11 @@ module.exports = {
                     if (message.member.voice.channel){
                         client.connection = await message.member.voice.channel.join();
                         client.dispatcher = client.connection.play(ytdl(ytData[1]));
+                        client.dispatcher.on('speaking', (isSpeaking: boolean) => {
+                            if (!isSpeaking){
+                                console.log('Song finished!');
+                            }
+                        })
                         message.channel.send(`<@${userId}> played ${ytData[0]}!`);
                         console.log(`${userName} played ${ytData[0]}`);
                     } else {
