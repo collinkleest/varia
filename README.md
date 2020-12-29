@@ -29,3 +29,12 @@ Command List
 - **/stop | /s** stop the current song being played (non-resumable)
 - **/view-queue | /vq** look at the current queue
 - **/help | /h** get the command list and other information about the bot
+
+
+## Todo List
+- [ ] implement skip functionality
+- [ ] implement play and queue if yt url is passed
+- [ ] create custom help command and documentation
+- [ ] required arguments stuff
+- [ ] implement permissions
+- [ ] clean up queue
