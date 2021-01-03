@@ -2,7 +2,9 @@ import { Message } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
 
 const ytdl = require('ytdl-core');
-const { getSongByName } = require('../utils/yt-factory'); 
+const { getSongByName, getSongTitleById } = require('../utils/yt-factory'); 
+
+
 module.exports = {
     name: 'play',
     description: 'Play a song with a given YouTube url < yt_uri : string>',
@@ -27,11 +29,11 @@ module.exports = {
                     if (message.member.voice.channel){
                         client.connection = await message.member.voice.channel.join();
                         client.dispatcher = client.connection.play(ytdl(ytData[1]));
-                        client.dispatcher.on('speaking', (isSpeaking: boolean) => {
-                            if (!isSpeaking){
-                                console.log('Song finished!');
-                            }
-                        })
+                        client.currentlyPlaying = ytData[0];
+
+                        // client.dispatcher.on('finish', () => {
+                        // });
+                        
                         message.channel.send(`<@${userId}> played ${ytData[0]}!`);
                         console.log(`${userName} played ${ytData[0]}`);
                     } else {
@@ -40,6 +42,28 @@ module.exports = {
                     }
                 }
             }
+        } else {
+            let ytVideoUri : string = args[0];
+            let ytVideoId : string = ytVideoUri.substring(ytVideoUri.indexOf("v=") + 2);
+            let ytVideoTitle = await getSongTitleById(ytVideoId);
+            client.queue.set(ytVideoTitle, args[0]);
+            if (!client.connection) {
+                if (message.member.voice.channel){
+                    client.connection = await message.member.voice.channel.join();
+                    client.dispatcher = client.connection.play(ytdl(args[0]));
+                    client.currentlyPlaying = ytVideoTitle;
+
+                    client.dispatcher.on('finish', () => {
+                        console.log('song finished inside finish!!');
+                    });
+
+                    message.channel.send(`<@${userId}> played ${ytVideoTitle}!`);
+                    console.log(`${userName} played ${ytVideoTitle}`);
+                } else {
+                    message.channel.send(`<@${userId}>, you must join a voice channel to play music!`);
+                    console.log(`${userName} tried to play music when not in a voice channel`);
+                }  
+            } 
         }
     }
   };

@@ -9,7 +9,8 @@ const { readdirSync } =  require("fs");
 const client : any = new Client();
 client.commands = new Collection();
 client.queue = new Map();
-client.prefix = config.prefix
+client.prefix = config.prefix;
+client.currentlyPlaying = "";
 const commandFiles: string[] = readdirSync('./src/commands').filter( (file: string) => {
   if (file.endsWith('.ts') || file.endsWith('.js')){
     return file;
@@ -23,6 +24,7 @@ const DISCORD_TOKEN : (string | undefined) = process.env.DISCORD_TOKEN;
 const setClientCommands = (commandFileList: string[]) => {
   for (const fileName of commandFileList) {
     const command = require(`./commands/${fileName}`);
+    console.log(`Loading command ${fileName}`);
     client.commands.set(command.name, command); 
   }
 };
