@@ -8,11 +8,11 @@ const { readdirSync } =  require("fs");
 
 const client : any = new Client();
 client.commands = new Collection();
-client.queue = new Map();
+client.queue = [];
 client.prefix = config.prefix;
 client.currentlyPlaying = "";
 const commandFiles: string[] = readdirSync('./src/commands').filter( (file: string) => {
-  if (file.endsWith('.ts') || file.endsWith('.js')){
+  if (file.endsWith('.js') || file.endsWith('.ts')){
     return file;
   }
 });
@@ -60,7 +60,6 @@ client.on('message', async (message : any) => {
   const command: (string | undefined) = args.shift()?.toLowerCase();
 
   // if (!client.commmands.has(command)) return;
-  
   try {
     client.commands.get(command).execute(message, args, client);
   } catch (error) {
