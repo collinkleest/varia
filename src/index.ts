@@ -4,6 +4,7 @@
 const {Client, Collection} = require("discord.js");
 import dotenv from 'dotenv';
 import config from './config.json';
+import YTFactory from './core/YTFactory';
 const { readdirSync } =  require("fs");
 
 const client : any = new Client();
@@ -11,6 +12,7 @@ client.commands = new Collection();
 client.queue = [];
 client.prefix = config.prefix;
 client.currentlyPlaying = "";
+client.ytFactory = new YTFactory();
 const commandFiles: string[] = readdirSync('./src/commands').filter( (file: string) => {
   if (file.endsWith('.js') || file.endsWith('.ts')){
     return file;

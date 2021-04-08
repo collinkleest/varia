@@ -1,9 +1,6 @@
 import { Message } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
-
-const ytdl = require('ytdl-core');
-const { getSongByName, getSongTitleById } = require('../utils/yt-factory'); 
-const  {playSongFromKeywords, playSongByUrl} = require('../utils/yt-player'); 
+import MusicPlayer from "../core/MusicPlayer";
 
 module.exports = {
     name: 'play',
@@ -11,9 +8,9 @@ module.exports = {
     async execute(message: Message, args: string[], client: VariaClient) {
         let commandArguments: string = args.join(' ');
         if (!(commandArguments.includes("youtube.com"))){
-            playSongFromKeywords(message, args, client);
+            MusicPlayer.playSongByKeywords(message, args, client);
         } else {
-            playSongByUrl(message, args, client);
+            MusicPlayer.playSongByUrl(message, args, client);
         }
     }
   };

@@ -1,7 +1,8 @@
 import { Message } from "discord.js";
 import { QueueItem } from "../typings/Queue";
 import { VariaClient } from "../typings/VariaClient";
-import { getSongByName } from "../utils/yt-factory";
+import YTFactory from "../core/YTFactory"; 
+import { YTData } from "../typings/YTData";
 
 module.exports = {
     name: "queue",
@@ -15,7 +16,7 @@ module.exports = {
                 let queueString: string = '';
                 let index: number = 1;
                 client.queue.forEach((queueItem: QueueItem) => {
-                    queueString += `${index++} ${queueItem.name} ${queueItem.url}\n`;
+                    queueString += `${index++} ${queueItem.name} ${queueItem.url} ${queueItem.isPlaying ? '✅' : '❌'}\n`;
                 });
                 message.channel.send('```' + queueString + '```');
                 return;
@@ -23,12 +24,20 @@ module.exports = {
         } else {
             let commandArguments: string = args.join(' ');
             if (!(commandArguments.includes("youtube.com"))){
-                let ytData: string[] = await getSongByName(commandArguments);
-                if (ytData.length){
-                    client.queue.push({name: ytData[0], url: ytData[1], isPlaying: false});
-                    message.channel.send(`${message.author.id} queued ${ytData[0]}`);
+                let ytData: YTData = await YTFactory.getSongDataByName(commandArguments);
+                if (ytData){
+                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false});
+                    message.channel.send(`${message.author.id} queued ${ytData.title}`);
                 } else {
                     message.reply('Could not queue your song'); 
+                }
+            } else {
+                let ytData: YTData = await YTFactory.getSongDataById(commandArguments);
+                if (ytData){
+                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false});
+                    message.channel.send(`${message.author.id} queued ${ytData.title}`);
+                } else {
+                    message.reply('Could not queue your song');
                 }
             }
         }
