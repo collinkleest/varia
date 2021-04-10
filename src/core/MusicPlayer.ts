@@ -25,6 +25,7 @@ class MusicPlayer {
                     client.queue.shift();
                     this.play(client, message);
                 })
+                this.playSuccess(message, client.queue[0].name);
             } 
         } else {
             console.error("Nothing in the queue to play");
@@ -55,6 +56,9 @@ class MusicPlayer {
     }
 
     static async playSuccess(message: Message, songTitle: string){
+        const {author: {username}} = message;
+        message.channel.send(`${songTitle} is now playing!`);
+        console.log(`${username} played ${songTitle}`);
     }
 
     static defaultChecks(message: Message, args: string[]): boolean {
