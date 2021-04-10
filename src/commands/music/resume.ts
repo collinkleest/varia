@@ -1,8 +1,10 @@
 import { Message } from "discord.js";
-import { VariaClient } from "../typings/VariaClient";
+import { VariaClient } from "../../typings/VariaClient";
 module.exports = {
     name: 'resume',
     description: 'Resume a song that is has been paused',
+    args: false,
+    usage: '/resume',
     async execute(message: Message, args: string[], client: VariaClient) {
       if (client.dispatcher){
         if (!client.dispatcher.paused){

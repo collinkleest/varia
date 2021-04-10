@@ -1,12 +1,14 @@
 import { Message } from "discord.js";
-import { QueueItem } from "../typings/Queue";
-import { VariaClient } from "../typings/VariaClient";
-import YTFactory from "../core/YTFactory"; 
-import { YTData } from "../typings/YTData";
+import { QueueItem } from "../../typings/Queue";
+import { VariaClient } from "../../typings/VariaClient";
+import YTFactory from "../../core/YTFactory"; 
+import { YTData } from "../../typings/YTData";
 
 module.exports = {
     name: "queue",
     description: "View queue or queue a song to currently playing music",
+    args: false,
+    usage: '/queue <youtube url> or <song name>',
     async execute(message: Message, args: string[], client: VariaClient){
         if (args.length == 0){
             if (client.queue.length == 0){

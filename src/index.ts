@@ -4,7 +4,6 @@
 const {Client, Collection} = require("discord.js");
 import dotenv from 'dotenv';
 import config from './config.json';
-import YTFactory from './core/YTFactory';
 const { readdirSync } =  require("fs");
 
 const client : any = new Client();
@@ -12,26 +11,31 @@ client.commands = new Collection();
 client.queue = [];
 client.prefix = config.prefix;
 client.currentlyPlaying = "";
-client.ytFactory = new YTFactory();
-const commandFiles: string[] = readdirSync('./src/commands').filter( (file: string) => {
-  if (file.endsWith('.js') || file.endsWith('.ts')){
-    return file;
-  }
-});
+
+const commandFolders = readdirSync('./src/commands');
+
+/*
+* Read command files in directory `./src/commands`
+* Set commands in client.commands collection 
+*/
+for (const folder of commandFolders){
+  const commandFiles = readdirSync(`./src/commands/${folder}`).filter((file: string) => {
+    if (file.endsWith('.ts') || file.endsWith('.js')){
+      return file;
+    }
+  });
+  commandFiles.forEach((file: any) => {
+    const command = require(`./commands/${folder}/${file}`);
+    console.log(`Loading command ${file}`);
+    client.commands.set(command.name, command); 
+  });
+}
+
+
 
 // load and set environment variables
 dotenv.config();
 const DISCORD_TOKEN : (string | undefined) = process.env.DISCORD_TOKEN;
-
-const setClientCommands = (commandFileList: string[]) => {
-  for (const fileName of commandFileList) {
-    const command = require(`./commands/${fileName}`);
-    console.log(`Loading command ${fileName}`);
-    client.commands.set(command.name, command); 
-  }
-};
-
-setClientCommands(commandFiles);
 
 client.once('ready', () => {
   client.user.setPresence({
@@ -59,11 +63,23 @@ client.on('message', async (message : any) => {
   const args: string[] = message.content.slice(client.prefix.length).trim().split(/ +/);
   
   // takes first element in array and returns it but also removes the first element from the array
-  const command: (string | undefined) = args.shift()?.toLowerCase();
+  const commandName: (string | undefined) = args.shift()?.toLowerCase();
+  // if command isn't present prevent execution
+  if (!client.commands.has(commandName)) {return};
 
-  // if (!client.commmands.has(command)) return;
+  const command = client.commands.get(commandName);
+  
+  // check if args are required
+  if (command.args && !args.length){
+    let reply = `You didn't provide any arguments, ${message.author}!`;
+    if (command.usage) {
+      reply += `\nThe proper usage would be: \`${command.usage}\``;
+    }
+    return message.channel.send(reply);
+  }
+
   try {
-    client.commands.get(command).execute(message, args, client);
+    command.execute(message, args, client);
   } catch (error) {
     console.error(error);
     message.reply('There was an error trying to execute that command!');

@@ -32,9 +32,9 @@ Command List
 
 
 ## Todo List
-- [ ] implement skip functionality
-- [ ] implement play and queue if yt url is passed
+- [x] implement skip functionality
+- [x] implement play and queue if yt url is passed
 - [ ] create custom help command and documentation
 - [ ] required arguments stuff
 - [ ] implement permissions
-- [ ] clean up queue
+- [x] clean up queue
