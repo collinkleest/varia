@@ -5,6 +5,7 @@ module.exports = {
     description: 'Resume a song that is has been paused',
     args: false,
     usage: '/resume',
+    aliases: ['r'],
     async execute(message: Message, args: string[], client: VariaClient) {
       if (client.dispatcher){
         if (!client.dispatcher.paused){

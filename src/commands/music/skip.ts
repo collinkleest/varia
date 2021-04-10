@@ -7,6 +7,7 @@ module.exports = {
     description: "Skip song that is currently playing",
     args: false,
     usage: '/skip <song name> or <song url> or <queue position>',
+    aliases: ['s'],
     async execute(message: Message, args: string[], client: VariaClient){
         // check if there are items in queue
         if (client.queue.length > 0 ) {

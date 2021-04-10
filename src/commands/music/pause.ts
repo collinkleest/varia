@@ -6,6 +6,7 @@ module.exports = {
     description: 'Pause a song that is currently playing',
     args: false,
     usage: '/pause',
+    aliases: ['pa'],
     async execute(message: Message, args: string[], client: VariaClient) {
         if (client.dispatcher){
             if (client.dispatcher.paused){

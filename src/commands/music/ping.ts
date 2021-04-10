@@ -5,6 +5,7 @@ module.exports = {
   description: 'Ping!',
   args: false,
   usage: '/ping',
+  aliases: ['pi'],
   execute(message: Message, args: string[]) {
     message.channel.send(`<@${message.author.id}> pinged varia!`);
   }

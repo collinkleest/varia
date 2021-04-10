@@ -6,6 +6,7 @@ module.exports = {
     description: "Increase or decrease volume <decimal number>",
     args: false,
     usage: "/volume <number decimal>",
+    aliases: ['v', 'level'],
     async execute(message: Message, args: string[], client: VariaClient){
         const {author: {username}} = message;
         if (client.dispatcher){

@@ -9,6 +9,7 @@ module.exports = {
     description: "View queue or queue a song to currently playing music",
     args: false,
     usage: '/queue <youtube url> or <song name>',
+    aliases: ['q'],
     async execute(message: Message, args: string[], client: VariaClient){
         if (args.length == 0){
             if (client.queue.length == 0){
