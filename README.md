@@ -43,3 +43,9 @@ Command List
 - [ ] embeds for queue and play (https://discordjs.guide/popular-topics/embeds.html#embed-preview)
 - [ ] playtime for queue and play
 - [ ] message reactions for pause / stop / skip (https://discordjs.guide/popular-topics/reactions.html#reacting-to-messages)
+- [ ] handling for multiple servers
+- [ ] currently playing command with time
+- [ ] stop command
+- [ ] clear queue command
+- [ ] deployment
+- [ ] front-end homepage for adding a server
