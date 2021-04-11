@@ -34,7 +34,7 @@ Command List
 ## Todo List
 - [x] implement skip functionality
 - [x] implement play and queue if yt url is passed
-- [ ] create custom help command and documentation
+- [x] create custom help command and documentation
 - [x] required arguments stuff
 - [ ] implement permissions
 - [x] clean up queue
@@ -42,10 +42,13 @@ Command List
 - [x] command cooldowns
 - [ ] embeds for queue and play (https://discordjs.guide/popular-topics/embeds.html#embed-preview)
 - [ ] playtime for queue and play
+- [ ] set activity if noting playing
 - [ ] message reactions for pause / stop / skip (https://discordjs.guide/popular-topics/reactions.html#reacting-to-messages)
 - [ ] handling for multiple servers
 - [ ] currently playing command with time
 - [ ] stop command
 - [ ] clear queue command
+- [ ] currently playing command
+    - [ ] checks against queue
 - [ ] deployment
 - [ ] front-end homepage for adding a server

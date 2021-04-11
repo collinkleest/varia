@@ -62,8 +62,6 @@ client.on('message', async (message : any) => {
   
   // takes first element in array and returns it but also removes the first element from the array
   const commandName: String = String(args.shift()?.toLowerCase());
-  // if command isn't present prevent execution
-  if (!client.commands.has(commandName)) {return};
 
   const command = client.commands.get(commandName) || client.commands.find((cmd: any) => {
     return cmd.aliases && cmd.aliases.includes(commandName)

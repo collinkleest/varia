@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { QueueItem } from "../../typings/Queue";
+import { QueueItem } from "../../typings/QueueItem";
 import { VariaClient } from "../../typings/VariaClient";
 import YTFactory from "../../core/YTFactory"; 
 import { YTData } from "../../typings/YTData";
@@ -30,7 +30,7 @@ module.exports = {
             if (!(commandArguments.includes("youtube.com"))){
                 let ytData: YTData = await YTFactory.getSongDataByName(commandArguments);
                 if (ytData){
-                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false, length: ytData.length});
+                    client.queue.push(new QueueItem(ytData.title, ytData.url, message.author.username, ytData.length, false));
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
                 } else {
                     message.reply('Could not queue your song'); 
@@ -38,7 +38,7 @@ module.exports = {
             } else {
                 let ytData: YTData = await YTFactory.getSongDataById(commandArguments);
                 if (ytData){
-                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false, length: ytData.length});
+                    client.queue.push(new QueueItem(ytData.title, ytData.url, message.author.username, ytData.length, false));
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
                 } else {
                     message.reply('Could not queue your song');

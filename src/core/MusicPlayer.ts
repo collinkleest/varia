@@ -2,6 +2,7 @@ import { Collection, DiscordAPIError, Message, MessageEmbed } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
 import { YTData } from "../typings/YTData";
 import YTFactory from "./YTFactory";
+import { QueueItem } from "../typings/QueueItem";
 import { millisToMinutesAndSeconds } from "../utils/timeutils"; 
 const ytdl =  require("ytdl-core");
 
@@ -39,7 +40,7 @@ class MusicPlayer {
             // implement some url checking in future...
             const ytVideoID : string = args[0].substring(args[0].indexOf("v=") + 2);
             const ytVideoData: YTData = await YTFactory.getSongDataById(ytVideoID);
-            client.queue.push({name: ytVideoData.title, url: ytVideoData.url, isPlaying: false, length: ytVideoData.length});
+            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, message.author.username, ytVideoData.length, false));
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
@@ -50,7 +51,7 @@ class MusicPlayer {
         if (this.defaultChecks(message, args)){
             const commandArguments: string = args.join(' ');
             const ytVideoData : YTData = await YTFactory.getSongDataByName(commandArguments);
-            client.queue.push({name: ytVideoData.title, url: ytVideoData.url, isPlaying: false, length: ytVideoData.length});
+            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, message.author.username, ytVideoData.length, false));
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
@@ -72,7 +73,7 @@ class MusicPlayer {
         .setTitle(`${songTitle} is now playing!`)
         .addFields(
             { name: 'Played By', value: username, inline: true },
-            { name: 'Duration', value: millisToMinutesAndSeconds(client.queue[0].length), inline: true}
+            { name: 'Duration', value: millisToMinutesAndSeconds(client.queue[0].duration), inline: true}
         )
         .setFooter('Varia Music Bot', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png');
         return songEmbed;
