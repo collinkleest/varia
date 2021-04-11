@@ -38,7 +38,7 @@ Command List
 - [x] required arguments stuff
 - [ ] implement permissions
 - [x] clean up queue
-- [ ] command reloading
+- [x] command reloading
 - [ ] command cooldowns
 - [ ] embeds for queue and play (https://discordjs.guide/popular-topics/embeds.html#embed-preview)
 - [ ] playtime for queue and play

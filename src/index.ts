@@ -37,7 +37,6 @@ for (const folder of commandFolders){
 dotenv.config();
 const DISCORD_TOKEN : (string | undefined) = process.env.DISCORD_TOKEN;
 
-
 client.once('ready', () => {
   client.user.setActivity('commands | /help',{
     type: 'LISTENING'
@@ -65,7 +64,7 @@ client.on('message', async (message : any) => {
   if (!client.commands.has(commandName)) {return};
 
   const command = client.commands.get(commandName) || client.commands.find((cmd: any) => {
-    cmd.aliases && cmd.aliases.includes(commandName)
+    return cmd.aliases && cmd.aliases.includes(commandName)
   });
 
   if (!command){return;}
