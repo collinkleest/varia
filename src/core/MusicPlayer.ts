@@ -1,8 +1,10 @@
-import { Message } from "discord.js";
+import { Collection, DiscordAPIError, Message, MessageEmbed } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
 import { YTData } from "../typings/YTData";
 import YTFactory from "./YTFactory";
+import { millisToMinutesAndSeconds } from "../utils/timeutils"; 
 const ytdl =  require("ytdl-core");
+
 
 class MusicPlayer {
 
@@ -25,7 +27,7 @@ class MusicPlayer {
                     client.queue.shift();
                     this.play(client, message);
                 })
-                this.playSuccess(message, client.queue[0].name);
+                this.playSuccess(message, client.queue[0].name, client);
             } 
         } else {
             console.error("Nothing in the queue to play");
@@ -37,7 +39,7 @@ class MusicPlayer {
             // implement some url checking in future...
             const ytVideoID : string = args[0].substring(args[0].indexOf("v=") + 2);
             const ytVideoData: YTData = await YTFactory.getSongDataById(ytVideoID);
-            client.queue.push({name: ytVideoData.title, url: ytVideoData.url, isPlaying: false});
+            client.queue.push({name: ytVideoData.title, url: ytVideoData.url, isPlaying: false, length: ytVideoData.length});
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
@@ -48,18 +50,31 @@ class MusicPlayer {
         if (this.defaultChecks(message, args)){
             const commandArguments: string = args.join(' ');
             const ytVideoData : YTData = await YTFactory.getSongDataByName(commandArguments);
-            client.queue.push({name: ytVideoData.title, url: ytVideoData.url, isPlaying: false});
+            client.queue.push({name: ytVideoData.title, url: ytVideoData.url, isPlaying: false, length: ytVideoData.length});
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
         }
     }
 
-    static async playSuccess(message: Message, songTitle: string){
+    static async playSuccess(message: Message, songTitle: string, client: VariaClient){
         const {author: {username}} = message;
-        message.client.user?.setActivity(songTitle, {type: "LISTENING"})
-        message.channel.send(`${songTitle} is now playing!`);
+        message.client.user?.setActivity(songTitle, {type: "LISTENING"});
+        let messageEmbed = this.buildEmbed(message, songTitle, client);
+        message.channel.send(messageEmbed);
         console.log(`${username} played ${songTitle}`);
+    }
+
+    static buildEmbed(message: Message, songTitle: string, client: VariaClient){
+        const {author: {username}} = message;
+        const songEmbed = new MessageEmbed()
+        .setColor('#1C2E4A')
+        .setTitle(`${songTitle} is now playing!`)
+        .addFields(
+            { name: 'Played By', value: username, inline: true },
+            { name: 'Duration', value: millisToMinutesAndSeconds(client.queue[0].length), inline: true}
+        );
+        return songEmbed;
     }
 
     static defaultChecks(message: Message, args: string[]): boolean {

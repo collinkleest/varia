@@ -30,7 +30,7 @@ module.exports = {
             if (!(commandArguments.includes("youtube.com"))){
                 let ytData: YTData = await YTFactory.getSongDataByName(commandArguments);
                 if (ytData){
-                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false});
+                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false, length: ytData.length});
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
                 } else {
                     message.reply('Could not queue your song'); 
@@ -38,7 +38,7 @@ module.exports = {
             } else {
                 let ytData: YTData = await YTFactory.getSongDataById(commandArguments);
                 if (ytData){
-                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false});
+                    client.queue.push({name: ytData.title, url: ytData.url, isPlaying: false, length: ytData.length});
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
                 } else {
                     message.reply('Could not queue your song');

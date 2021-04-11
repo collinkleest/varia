@@ -39,7 +39,7 @@ Command List
 - [ ] implement permissions
 - [x] clean up queue
 - [x] command reloading
-- [ ] command cooldowns
+- [x] command cooldowns
 - [ ] embeds for queue and play (https://discordjs.guide/popular-topics/embeds.html#embed-preview)
 - [ ] playtime for queue and play
 - [ ] message reactions for pause / stop / skip (https://discordjs.guide/popular-topics/reactions.html#reacting-to-messages)

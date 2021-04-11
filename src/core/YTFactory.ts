@@ -1,6 +1,7 @@
 import { AxiosResponse } from "../typings/AxiosResponse";
 import { YTData } from "../typings/YTData"; 
 const axios: any = require('axios');
+const ytdl = require('ytdl-core');
 
 class YTFactory {
     static API_URL: string = 'https://youtube.googleapis.com/youtube/v3/';
@@ -9,11 +10,14 @@ class YTFactory {
 
     static async getSongDataByName(search: string): Promise<YTData> {
         let uriResource : string = 'search';
-        let responseData : YTData = {title: '', url: ''};
+        let responseData : YTData = {title: '', url: '', length: 0};
         await axios.get(`${this.API_URL}${uriResource}?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${search}`)
-        .then((response: AxiosResponse) => {
+        .then(async (response: AxiosResponse) => {
             responseData.title = response.data.items[0].snippet.title;
             responseData.url =  this.generateYouTubeUri(response.data.items[0].id.videoId);
+            let videoInfo = await ytdl.getInfo(response.data.items[0].id.videoId);
+            let videoLength = parseInt(videoInfo.formats[0].approxDurationMs);
+            responseData.length = videoLength;
             return responseData;
         })
         .catch((error: any) => {
@@ -28,11 +32,14 @@ class YTFactory {
 
     static async getSongDataById(videoId: string): Promise<YTData>{
         let uriResource: string = 'videos';
-        let responseData: YTData = {title: '', url: ''};
+        let responseData: YTData = {title: '', url: '', length: 0};
         await axios.get(`${this.API_URL}${uriResource}?key=${process.env.YT_API_KEY}&part=snippet&id=${videoId}`)
-        .then( (response: AxiosResponse) => {
+        .then( async (response: AxiosResponse) => {
             responseData.title = response.data.items[0].snippet.title;
             responseData.url = this.generateYouTubeUri(videoId);
+            let videoInfo = await ytdl.getInfo(videoId);
+            let videoLength = parseInt(videoInfo.formats[0].approxDurationMs);
+            responseData.length = videoLength;
             return responseData;
         })
         .catch( (error: any) => {
