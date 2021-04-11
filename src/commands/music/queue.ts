@@ -10,6 +10,7 @@ module.exports = {
     args: false,
     usage: '/queue <youtube url> or <song name>',
     aliases: ['q'],
+    cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient){
         if (args.length == 0){
             if (client.queue.length == 0){

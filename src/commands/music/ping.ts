@@ -7,6 +7,7 @@ module.exports = {
   args: false,
   usage: '/ping',
   aliases: ['pi'],
+  cooldown: 5,
   execute(message: Message, args: string[], client: VariaClient) {
     const {author: {id, username}} = message;
     const {ws : {ping}} = client;

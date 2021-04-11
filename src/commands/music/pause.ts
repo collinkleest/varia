@@ -7,6 +7,7 @@ module.exports = {
     args: false,
     usage: '/pause',
     aliases: ['pa'],
+    cooldown: 2,
     async execute(message: Message, args: string[], client: VariaClient) {
         if (client.dispatcher){
             if (client.dispatcher.paused){

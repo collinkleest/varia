@@ -8,6 +8,7 @@ module.exports = {
     args: true,
     usage: '/play <youtube url or song name>',
     aliases: ['p'],
+    cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient) {
         let commandArguments: string = args.join(' ');
         if (!(commandArguments.includes("youtube.com"))){

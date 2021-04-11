@@ -7,6 +7,7 @@ module.exports = {
     args: false,
     usage: "/volume <number decimal>",
     aliases: ['v', 'level'],
+    cooldown: 0,
     async execute(message: Message, args: string[], client: VariaClient){
         const {author: {username}} = message;
         if (client.dispatcher){

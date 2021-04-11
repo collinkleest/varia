@@ -6,6 +6,7 @@ module.exports = {
     args: false,
     usage: '/resume',
     aliases: ['r'],
+    cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient) {
       if (client.dispatcher){
         if (!client.dispatcher.paused){

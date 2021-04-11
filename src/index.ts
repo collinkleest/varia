@@ -4,13 +4,15 @@
 const {Client, Collection} = require("discord.js");
 import dotenv from 'dotenv';
 import config from './config.json';
+import { VariaClient } from './typings/VariaClient';
 const { readdirSync } =  require("fs");
 
-const client : any = new Client();
+const client : VariaClient = new Client();
 client.commands = new Collection();
 client.queue = [];
 client.prefix = config.prefix;
 client.currentlyPlaying = "";
+client.cooldowns = new Collection();
 
 const commandFolders = readdirSync('./src/commands');
 
@@ -38,7 +40,7 @@ dotenv.config();
 const DISCORD_TOKEN : (string | undefined) = process.env.DISCORD_TOKEN;
 
 client.once('ready', () => {
-  client.user.setActivity('commands | /help',{
+  client.user?.setActivity('commands | /help',{
     type: 'LISTENING'
   });
 	console.log('Varia is Running!');
@@ -59,7 +61,7 @@ client.on('message', async (message : any) => {
   const args: string[] = message.content.slice(client.prefix.length).trim().split(/ +/);
   
   // takes first element in array and returns it but also removes the first element from the array
-  const commandName: (string | undefined) = args.shift()?.toLowerCase();
+  const commandName: String = String(args.shift()?.toLowerCase());
   // if command isn't present prevent execution
   if (!client.commands.has(commandName)) {return};
 
@@ -77,6 +79,29 @@ client.on('message', async (message : any) => {
     }
     return message.channel.send(reply);
   }
+
+  const { cooldowns } = client;
+
+  if (!cooldowns.has(command.name)) {
+    cooldowns.set(command.name, new Collection());
+  }
+
+  const now = Date.now();
+  const timestamps = cooldowns.get(command.name);
+  const cooldownAmount = (command.cooldown || 3) * 1000;
+
+  if (timestamps?.has(message.author.id)) {
+    const timestamp = timestamps.get(message.author.id);
+    if (timestamp){
+      const expirationTime =  timestamp + cooldownAmount;
+      if (now < expirationTime) {
+        const timeLeft = (expirationTime - now) / 1000;
+        return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+      }
+    }
+  }
+  timestamps?.set(message.author.id, now);
+  setTimeout(() => timestamps?.delete(message.author.id), cooldownAmount);
 
   try {
     command.execute(message, args, client);

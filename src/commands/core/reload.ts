@@ -8,6 +8,7 @@ module.exports = {
     args: true,
     usage: '/reload <command to reload>',
     aliases: ['r'],
+    cooldown: 10,
 	execute(message: Message, args: string[], client: VariaClient) {
         const fileExtension : string = process.env.NODE_ENV === "development" ? '.ts' : '.js';
         const commandName = args[0].toLowerCase();
