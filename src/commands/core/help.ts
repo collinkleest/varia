@@ -1,12 +1,25 @@
 import { EmbedFieldData, Message, MessageEmbed } from "discord.js";
+import { Command } from "../../typings/Command";
 import { VariaClient } from "../../typings/VariaClient";
 
 const commandsEmbed = (commandList: EmbedFieldData[]): MessageEmbed => {
-    let msgEmbed = new MessageEmbed()
+    const msgEmbed = new MessageEmbed()
     .setColor('#1C2E4A')
     .setTitle('Commands List')
     .addFields(commandList)
-    .setFooter('Use /help <specific command> for more details about a certain command', '../../../assets/varialogo.png');
+    .setFooter('Use /help <specific command> for more details about a certain command', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png');
+    return msgEmbed;
+}
+
+const singleCommandEmbed = (command: Command): MessageEmbed => {
+    const msgEmbed = new MessageEmbed()
+    .setColor('#1C2E4A')
+    .setTitle(command.name)
+    .setDescription(command.description)
+    .addField('Usage:', command.usage)
+    .addField('Aliases:', command.aliases.join(', '), true)
+    .addField('Required Arguments:', command.args ? 'Yes' : 'No', true)
+    .addField('Cooldown Time:', command.cooldown+" seconds", true);
     return msgEmbed;
 }
 
@@ -29,7 +42,12 @@ module.exports = {
             })
             message.channel.send(commandsEmbed(data));
         } else {
-
+            const name = args[0].toLowerCase();
+            const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
+            if (!command) {
+                return message.reply('that\'s not a valid command!');
+            }
+            message.channel.send(singleCommandEmbed(command));
         }
 
 	},

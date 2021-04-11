@@ -73,7 +73,8 @@ class MusicPlayer {
         .addFields(
             { name: 'Played By', value: username, inline: true },
             { name: 'Duration', value: millisToMinutesAndSeconds(client.queue[0].length), inline: true}
-        );
+        )
+        .setFooter('Varia Music Bot', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png');
         return songEmbed;
     }
 
