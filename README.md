@@ -40,3 +40,6 @@ Command List
 - [x] clean up queue
 - [ ] command reloading
 - [ ] command cooldowns
+- [ ] embeds for queue and play (https://discordjs.guide/popular-topics/embeds.html#embed-preview)
+- [ ] playtime for queue and play
+- [ ] message reactions for pause / stop / skip (https://discordjs.guide/popular-topics/reactions.html#reacting-to-messages)
