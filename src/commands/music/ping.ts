@@ -3,7 +3,7 @@ import { VariaClient } from "../../typings/VariaClient";
 
 module.exports = {
   name: 'ping',
-  description: 'Ping!',
+  description: 'Ping Varia bot and get its ping in ms',
   args: false,
   usage: '/ping',
   aliases: ['pi'],
