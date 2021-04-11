@@ -2,6 +2,8 @@
 
 An open-source music discord bot written in Typescript.
 
+[![GitHub](https://img.shields.io/github/license/collinkleest/varia)](https://github.com/collinkleest/varia/blob/master/LICENSE)
+
 #
 
 ## Development
