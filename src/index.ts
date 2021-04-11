@@ -37,13 +37,10 @@ for (const folder of commandFolders){
 dotenv.config();
 const DISCORD_TOKEN : (string | undefined) = process.env.DISCORD_TOKEN;
 
+
 client.once('ready', () => {
-  client.user.setPresence({
-    status: "online",
-    game: {
-      name: "/help",
-      type: "LISTENING"
-    }
+  client.user.setActivity('commands | /help',{
+    type: 'LISTENING'
   });
 	console.log('Varia is Running!');
 });

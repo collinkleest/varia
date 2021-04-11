@@ -35,6 +35,8 @@ Command List
 - [x] implement skip functionality
 - [x] implement play and queue if yt url is passed
 - [ ] create custom help command and documentation
-- [ ] required arguments stuff
+- [x] required arguments stuff
 - [ ] implement permissions
 - [x] clean up queue
+- [ ] command reloading
+- [ ] command cooldowns

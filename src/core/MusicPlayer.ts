@@ -57,6 +57,7 @@ class MusicPlayer {
 
     static async playSuccess(message: Message, songTitle: string){
         const {author: {username}} = message;
+        message.client.user?.setActivity(songTitle, {type: "LISTENING"})
         message.channel.send(`${songTitle} is now playing!`);
         console.log(`${username} played ${songTitle}`);
     }
