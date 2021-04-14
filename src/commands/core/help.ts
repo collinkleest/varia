@@ -7,7 +7,8 @@ const commandsEmbed = (commandList: EmbedFieldData[]): MessageEmbed => {
     .setColor('#1C2E4A')
     .setTitle('Commands List')
     .addFields(commandList)
-    .setFooter('Use /help <specific command> for more details about a certain command', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png');
+    .setFooter('Use /help <specific command> for more details about a certain command', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png')
+    .setTimestamp(new Date());
     return msgEmbed;
 }
 
@@ -19,7 +20,9 @@ const singleCommandEmbed = (command: Command): MessageEmbed => {
     .addField('Usage:', command.usage)
     .addField('Aliases:', command.aliases.join(', '), true)
     .addField('Required Arguments:', command.args ? 'Yes' : 'No', true)
-    .addField('Cooldown Time:', command.cooldown+" seconds", true);
+    .addField('Cooldown Time:', command.cooldown+" seconds", true)
+    .setFooter('Varia Music Bot', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png')
+    .setTimestamp(new Date());
     return msgEmbed;
 }
 

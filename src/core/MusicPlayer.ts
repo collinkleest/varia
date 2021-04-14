@@ -1,4 +1,4 @@
-import { Collection, DiscordAPIError, Message, MessageEmbed } from "discord.js";
+import { Collection, CollectorFilter, DiscordAPIError, Message, MessageEmbed, MessageReaction, ReactionCollector, User } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
 import { YTData } from "../typings/YTData";
 import YTFactory from "./YTFactory";
@@ -31,7 +31,10 @@ class MusicPlayer {
                 this.playSuccess(message, client.queue[0].name, client);
             } 
         } else {
-            console.error("Nothing in the queue to play");
+            client.user?.setActivity('commands | /help',{
+                type: 'LISTENING'
+            });
+            console.log("Nothing in the queue to play");
         }
     }
     
@@ -40,7 +43,7 @@ class MusicPlayer {
             // implement some url checking in future...
             const ytVideoID : string = args[0].substring(args[0].indexOf("v=") + 2);
             const ytVideoData: YTData = await YTFactory.getSongDataById(ytVideoID);
-            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, message.author.username, ytVideoData.length, false));
+            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, ytVideoData.thumbnail, message.author.username, ytVideoData.duration, false));
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
@@ -51,7 +54,7 @@ class MusicPlayer {
         if (this.defaultChecks(message, args)){
             const commandArguments: string = args.join(' ');
             const ytVideoData : YTData = await YTFactory.getSongDataByName(commandArguments);
-            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, message.author.username, ytVideoData.length, false));
+            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, ytVideoData.thumbnail, message.author.username, ytVideoData.duration, false));
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
@@ -62,8 +65,26 @@ class MusicPlayer {
         const {author: {username}} = message;
         message.client.user?.setActivity(songTitle, {type: "LISTENING"});
         let messageEmbed = this.buildEmbed(message, songTitle, client);
-        message.channel.send(messageEmbed);
+        // let newMessage : Message;
+        message.channel.send(messageEmbed).then((msg) => {
+            msg.react('▶');
+            msg.react('⏸️');
+            msg.createReactionCollector(this.getReactionCollector(client), {time: 15000});
+        });
         console.log(`${username} played ${songTitle}`);
+    }
+
+    static getReactionCollector(client: VariaClient): CollectorFilter {
+        return (reaction: MessageReaction, user: User) => {
+            if (!user.bot){
+                if (reaction.emoji.toString() === '▶'){
+                    client.dispatcher?.resume();
+                } else if (reaction.emoji.toString() === '⏸️'){
+                    client.dispatcher?.pause();
+                }
+            }
+            return true;
+        };
     }
 
     static buildEmbed(message: Message, songTitle: string, client: VariaClient){
@@ -74,7 +95,9 @@ class MusicPlayer {
         .addFields(
             { name: 'Played By', value: username, inline: true },
             { name: 'Duration', value: millisToMinutesAndSeconds(client.queue[0].duration), inline: true}
-        )
+        )   
+        .setTimestamp(new Date())
+        .setThumbnail(client.queue[0].thumbnail)
         .setFooter('Varia Music Bot', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png');
         return songEmbed;
     }

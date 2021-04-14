@@ -8,16 +8,17 @@ class YTFactory {
 
     constructor(){}
 
-    static async getSongDataByName(search: string): Promise<YTData> {
+    static async getSongDataByName(searchQuery: string): Promise<YTData> {
         let uriResource : string = 'search';
-        let responseData : YTData = {title: '', url: '', length: 0};
-        await axios.get(`${this.API_URL}${uriResource}?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${search}`)
+        let responseData : YTData = new YTData('', '', 0, '');
+        await axios.get(`${this.API_URL}${uriResource}?key=${process.env.YT_API_KEY}&type=video&part=snippet&q=${searchQuery}`)
         .then(async (response: AxiosResponse) => {
             responseData.title = response.data.items[0].snippet.title;
             responseData.url =  this.generateYouTubeUri(response.data.items[0].id.videoId);
+            responseData.thumbnail = response.data.items[0].snippet.thumbnails.high.url;
             let videoInfo = await ytdl.getInfo(response.data.items[0].id.videoId);
             let videoLength = parseInt(videoInfo.formats[0].approxDurationMs);
-            responseData.length = videoLength;
+            responseData.duration = videoLength;
             return responseData;
         })
         .catch((error: any) => {
@@ -32,14 +33,15 @@ class YTFactory {
 
     static async getSongDataById(videoId: string): Promise<YTData>{
         let uriResource: string = 'videos';
-        let responseData: YTData = {title: '', url: '', length: 0};
+        let responseData: YTData = new YTData('', '', 0, '');
         await axios.get(`${this.API_URL}${uriResource}?key=${process.env.YT_API_KEY}&part=snippet&id=${videoId}`)
         .then( async (response: AxiosResponse) => {
             responseData.title = response.data.items[0].snippet.title;
             responseData.url = this.generateYouTubeUri(videoId);
+            responseData.thumbnail = response.data.items[0].snippet.thumbnails.high.url;
             let videoInfo = await ytdl.getInfo(videoId);
             let videoLength = parseInt(videoInfo.formats[0].approxDurationMs);
-            responseData.length = videoLength;
+            responseData.duration = videoLength;
             return responseData;
         })
         .catch( (error: any) => {

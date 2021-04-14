@@ -12,12 +12,22 @@ interface VideoItem {
     snippet: VideoSnippet
 }
 
+interface Thumbnail {
+    url: string;
+    width: number;
+    height: number;
+}
+
 interface VideoSnippet {
     publishedAt: string
     channelId: string
     title: string
     description: string
-    thumbnails: any
+    thumbnails: {
+        default: Thumbnail;
+        medium: Thumbnail;
+        high: Thumbnail;
+    }
     channelTitle: string
     liveBroadcastContent: string
     publishTime: string

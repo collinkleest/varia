@@ -8,4 +8,12 @@ const millisToMinutesAndSeconds = (millis: number | undefined): string => {
     }
 }
 
-export {millisToMinutesAndSeconds};
+const playtimeToString = (streamTime: number | undefined, duration: number): string => {
+    return `[${millisToMinutesAndSeconds(streamTime)} | ${millisToMinutesAndSeconds(duration)}]`;
+}
+
+const durationToString = (duration: number): string => {
+    return `[${millisToMinutesAndSeconds(duration)}]`;
+}
+
+export {millisToMinutesAndSeconds, playtimeToString, durationToString};
