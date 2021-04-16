@@ -10,12 +10,13 @@ module.exports = {
     cooldown: 0,
     async execute(message: Message, args: string[], client: VariaClient){
         const {author: {username}} = message;
-        if (client.dispatcher){
+        const queue = client.queue.get(message.guild.id);
+        if (queue.dispatcher){
             if (args.length){
                 const volumeInput : number = parseFloat(args[0]); 
-                client.dispatcher.setVolume(volumeInput);
+                queue.dispatcher.setVolume(volumeInput);
             } else {
-                const volume = client.dispatcher?.volume;
+                const volume = queue.dispatcher.volume;
                 message.reply(`Current volume is ${volume}`);
             }
         } else {

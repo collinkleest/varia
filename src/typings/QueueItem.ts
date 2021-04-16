@@ -1,7 +1,7 @@
 interface QueueItemInterface {
     name: string;
     url: string;
-    thumbnail: string;
+    thumbnail: string | undefined;
     playedBy: string;
     duration: number;
     isPlaying: boolean;
@@ -18,7 +18,7 @@ class QueueItem implements QueueItemInterface {
     };
     public name: string;
     public url: string;
-    public thumbnail: string;
+    public thumbnail: string | undefined;
     public playedBy: string;
     public duration: number;
     public isPlaying: boolean;

@@ -9,10 +9,12 @@ module.exports = {
     aliases: ['st'],
     cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient){
-        if (client.connection){
-            client.connection.disconnect();
-            if (client.queue.length){
-                client.queue.shift();
+        const queue = client.queue.get(message.guild.id);
+        if (queue.connection){
+            queue.connection.disconnect();
+            queue.connection = null;
+            if (queue.items.length){
+                queue.items.shift();
             }
         } else {
             message.reply('Varia is not active in a voice channel');

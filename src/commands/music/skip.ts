@@ -10,10 +10,11 @@ module.exports = {
     aliases: ['s'],
     cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient){
+        const queue = client.queue.get(message.guild.id);
         // check if there are items in queue
-        if (client.queue.length > 0 ) {
+        if (queue.items.length) {
             // remove currently playing song and play next song
-            client.queue.shift();
+            queue.items.shift();
             MusicPlayer.play(client, message);
         }
     } 

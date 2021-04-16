@@ -5,19 +5,19 @@ import { VariaClient } from "../../typings/VariaClient";
 import { YTData } from "../../typings/YTData";
 import { durationToString, millisToMinutesAndSeconds, playtimeToString } from '../../utils/timeutils';
 
-const buildQueueEmbed = (client : VariaClient): MessageEmbed => {
+const buildQueueEmbed = (client : VariaClient, message: Message): MessageEmbed => {
     let descriptionText : string = '';
     let footerText : string = '';
     let queueDuration : number = 0;   
-    client.queue.forEach( (queueItem: QueueItem, index: number) => {
+    client.queue.get(message.guild?.id)?.items.forEach( (queueItem: QueueItem, index: number) => {
         let description = index+1 + ' : [' + queueItem.name + ']' + '(' + queueItem.url + ')';
-        description += '``' + (queueItem.isPlaying ? playtimeToString(client.dispatcher?.streamTime, queueItem.duration) : durationToString(queueItem.duration)) + '``';  
+        description += '``' + (queueItem.isPlaying ? playtimeToString(client.queue.get(message.guild?.id)?.dispatcher?.streamTime, queueItem.duration) : durationToString(queueItem.duration)) + '``';  
         description += " " + (queueItem.isPlaying ? '✅' : '❌');
         descriptionText += '\n' + description;
         queueDuration += queueItem.duration;
     });
     descriptionText += '\n' + '\n' + "Queue Time: " + "**" + millisToMinutesAndSeconds(queueDuration) + "**";
-    descriptionText += '\n' + "Queue Length: " + "**" + client.queue.length + "**";
+    descriptionText += '\n' + "Queue Length: " + "**" + client.queue.get(message.guild?.id)?.items.length + "**";
 
     const msgEmbed = new MessageEmbed()
     .setTitle("Queue")
@@ -37,12 +37,13 @@ module.exports = {
     aliases: ['q', 'vq'],
     cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient){
+        const guildId = message.guild?.id;
         if (!args.length){
-            if (!client.queue.length){
+            if (!client.queue.get(guildId)?.items.length){
                 message.reply('There is nothing currently queued!');
                 return;
             } else {
-                message.channel.send(buildQueueEmbed(client));
+                message.channel.send(buildQueueEmbed(client, message));
                 return;
             }
         } else {
@@ -50,7 +51,7 @@ module.exports = {
             if (!(commandArguments.includes("youtube.com"))){
                 let ytData: YTData = await YTFactory.getSongDataByName(commandArguments);
                 if (ytData){
-                    client.queue.push(new QueueItem(ytData.title, ytData.url, ytData.thumbnail, message.author.username, ytData.duration, false));
+                    client.queue.get(guildId)?.items.push(new QueueItem(ytData.title, ytData.url, ytData.thumbnail, message.author.username, ytData.duration, false));
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
                 } else {
                     message.reply('Could not queue your song'); 
@@ -58,7 +59,7 @@ module.exports = {
             } else {
                 let ytData: YTData = await YTFactory.getSongDataById(commandArguments);
                 if (ytData){
-                    client.queue.push(new QueueItem(ytData.title, ytData.url, ytData.thumbnail, message.author.username, ytData.duration, false));
+                    client.queue.get(guildId)?.items.push(new QueueItem(ytData.title, ytData.url, ytData.thumbnail, message.author.username, ytData.duration, false));
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
                 } else {
                     message.reply('Could not queue your song');

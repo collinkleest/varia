@@ -2,15 +2,18 @@
 *  Module imports
 */
 const {Client, Collection} = require("discord.js");
+import { debug } from 'console';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import dotenv from 'dotenv';
 import config from './config.json';
+import { Queue } from './typings/Queue';
 import { VariaClient } from './typings/VariaClient';
 const { readdirSync } =  require("fs");
 
 const client : VariaClient = new Client();
 client.commands = new Collection();
-client.queue = [];
 client.prefix = config.prefix;
+client.queue = new Map(); 
 client.currentlyPlaying = "";
 client.cooldowns = new Collection();
 
@@ -43,11 +46,18 @@ client.once('ready', () => {
   client.user?.setActivity('commands | /help',{
     type: 'LISTENING'
   });
+  
+  client.guilds.cache.forEach((guild) => {
+    client.queue.set(guild.id, new Queue());
+  });
+  
 	console.log('Varia is Running!');
 });
+client.on('warn', (warning) => {console.log(warning);});
+client.on('error', (error) => {console.error(error);});
 
 // verbose debugging
-// client.on('debug', console.log); 
+// client.on('debug', (debug) => {console.log(debug);});
 
 client.on('message', async (message : any) => {
   // if message doesn't start with specified prefix or was sent by the bot then return immediately

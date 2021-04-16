@@ -57,15 +57,15 @@ Command List
 - [x] playtime for queue and play
 - [x] set activity if noting playing
 - [ ] message reactions for pause / stop / skip (https://discordjs.guide/popular-topics/reactions.html#reacting-to-messages)
-- [ ] handling for multiple servers
+- [x] handling for multiple servers
 - [ ] currently playing command with time
     - [ ] progress bar 
     - [x] thumbnail image
     - [ ] link
     - [x] status
-- [ ] stop command
-- [ ] clear queue command
-- [ ] currently playing command
+- [x] stop command
+- [x] clear queue command
+- [x] currently playing command
     - [ ] checks against queue
 - [ ] deployment
 - [ ] front-end homepage for adding a server

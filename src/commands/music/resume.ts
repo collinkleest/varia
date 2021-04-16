@@ -8,12 +8,13 @@ module.exports = {
     aliases: ['r'],
     cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient) {
-      if (client.dispatcher){
-        if (!client.dispatcher.paused){
+      const queue = client.queue.get(message.guild.id);
+      if (queue.dispatcher){
+        if (!queue.dispatcher.paused){
           message.reply(`Song is already playing`);
           return;
         }
-        client.dispatcher.resume();
+        queue.dispatcher.resume();
         message.channel.send(`<@${message.author.id}>, resumed music!`);
         return;
       } else {

@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import { Queue } from "../../typings/Queue";
 import { VariaClient } from "../../typings/VariaClient";
 
 module.exports = {
@@ -9,11 +10,12 @@ module.exports = {
     aliases: ['pa'],
     cooldown: 2,
     async execute(message: Message, args: string[], client: VariaClient) {
-        if (client.dispatcher){
-            if (client.dispatcher.paused){
+        const queue : Queue = client.queue.get(message.guild.id);
+        if (queue.dispatcher){
+            if (queue.dispatcher.paused){
               message.reply(`Song is already paused`);
             }
-            client.dispatcher.pause();
+            queue.dispatcher.pause();
             message.channel.send(`<@${message.author.id}>, paused music!`);
             return;
           } else {

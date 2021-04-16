@@ -1,8 +1,9 @@
-import { Collection, CollectorFilter, DiscordAPIError, Message, MessageEmbed, MessageReaction, ReactionCollector, User } from "discord.js";
+import { Collection, CollectorFilter, DiscordAPIError, Guild, Message, MessageEmbed, MessageReaction, ReactionCollector, User } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
 import { YTData } from "../typings/YTData";
 import YTFactory from "./YTFactory";
 import { QueueItem } from "../typings/QueueItem";
+import { Queue } from "../typings/Queue";
 import { millisToMinutesAndSeconds } from "../utils/timeutils"; 
 const ytdl =  require("ytdl-core");
 
@@ -12,25 +13,32 @@ class MusicPlayer {
     constructor(){}
 
     static async play(client: VariaClient, message: Message): Promise<void>{
+        const guildId = message.guild?.id;
+        let queue : Queue | undefined = client.queue.get(guildId);
+        let queueItems : QueueItem[] | undefined = client.queue.get(guildId)?.items;
+        if (!queueItems || !queue ){return;}
         // make sure the queue is empty
-        if (client.queue.length){
+        if (queueItems.length){
             // check if song is already playing
-            if (!client.queue[0].isPlaying){
+            if (!queueItems[0].isPlaying){
                 // check if bot is in voice channel if not put it in voice channel
-                if (!client.connection){
-                    client.connection =  await message.member?.voice.channel?.join();
+                if (!queue.connection){
+                    queue.connection =  await message.member?.voice.channel?.join();
                 }
-                client.dispatcher = client.connection?.play(ytdl(client.queue[0].url));
-                client.queue[0].isPlaying = true;
-                client.dispatcher?.on('finish', () => {
+                queue.dispatcher = queue.connection?.play(ytdl(queueItems[0].url));
+                queueItems[0].isPlaying = true;
+                queue.dispatcher?.on('finish', () => {
+                    if (!queueItems){return;}
                     // set old song to not playing pop off array and call play func
-                    client.queue[0].isPlaying = false;
-                    client.queue.shift();
+                    queueItems[0].isPlaying = false;
+                    queueItems.shift();
                     this.play(client, message);
                 })
-                this.playSuccess(message, client.queue[0].name, client);
+                this.playSuccess(message, queueItems[0].name, client);
             } 
         } else {
+            queue.connection.disconnect();
+            queue.connection = null;
             client.user?.setActivity('commands | /help',{
                 type: 'LISTENING'
             });
@@ -39,11 +47,12 @@ class MusicPlayer {
     }
     
     static async playSongByUrl(message: Message, args: string[], client: VariaClient): Promise<void> {
+        const guildId = message.guild?.id;
         if (this.defaultChecks(message, args)){
             // implement some url checking in future...
             const ytVideoID : string = args[0].substring(args[0].indexOf("v=") + 2);
             const ytVideoData: YTData = await YTFactory.getSongDataById(ytVideoID);
-            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, ytVideoData.thumbnail, message.author.username, ytVideoData.duration, false));
+            client.queue.get(guildId)?.items.push(new QueueItem(ytVideoData.title, ytVideoData.url, ytVideoData.thumbnail, message.author.username, ytVideoData.duration, false));
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
@@ -51,10 +60,11 @@ class MusicPlayer {
     }
 
     static async playSongByKeywords(message: Message, args: string[], client: VariaClient){
+        const guildId = message.guild?.id;
         if (this.defaultChecks(message, args)){
             const commandArguments: string = args.join(' ');
             const ytVideoData : YTData = await YTFactory.getSongDataByName(commandArguments);
-            client.queue.push(new QueueItem(ytVideoData.title, ytVideoData.url, ytVideoData.thumbnail, message.author.username, ytVideoData.duration, false));
+            client.queue.get(guildId)?.items.push(new QueueItem(ytVideoData.title, ytVideoData.url, ytVideoData.thumbnail, message.author.username, ytVideoData.duration, false));
             this.play(client, message);
         } else {
             console.error('Song check did not pass');
@@ -69,18 +79,28 @@ class MusicPlayer {
         message.channel.send(messageEmbed).then((msg) => {
             msg.react('▶');
             msg.react('⏸️');
-            msg.createReactionCollector(this.getReactionCollector(client), {time: 15000});
+            msg.react('🛑');
+            msg.createReactionCollector(this.getReactionCollector(client, message));
         });
         console.log(`${username} played ${songTitle}`);
     }
 
-    static getReactionCollector(client: VariaClient): CollectorFilter {
+    static getReactionCollector(client: VariaClient, message: Message): CollectorFilter {
+        const guildId = message.guild?.id;
+        const queue = client.queue.get(guildId);
         return (reaction: MessageReaction, user: User) => {
+            if (!queue){return false;}
             if (!user.bot){
                 if (reaction.emoji.toString() === '▶'){
-                    client.dispatcher?.resume();
+                    queue.dispatcher.resume();
                 } else if (reaction.emoji.toString() === '⏸️'){
-                    client.dispatcher?.pause();
+                    queue.dispatcher.pause();
+                } else if (reaction.emoji.toString() === '🛑'){
+                    queue.connection.disconnect();
+                    queue.connection = null;
+                    if (queue.items.length){
+                        queue.items.shift();
+                    }
                 }
             }
             return true;
@@ -94,10 +114,10 @@ class MusicPlayer {
         .setTitle(`${songTitle} is now playing!`)
         .addFields(
             { name: 'Played By', value: username, inline: true },
-            { name: 'Duration', value: millisToMinutesAndSeconds(client.queue[0].duration), inline: true}
+            { name: 'Duration', value: millisToMinutesAndSeconds(client.queue.get(message.guild?.id)?.items[0].duration), inline: true}
         )   
         .setTimestamp(new Date())
-        .setThumbnail(client.queue[0].thumbnail)
+        .setThumbnail(String(client.queue.get(message.guild?.id)?.items[0].thumbnail))
         .setFooter('Varia Music Bot', 'https://raw.githubusercontent.com/collinkleest/varia/master/assets/varialogo.png');
         return songEmbed;
     }

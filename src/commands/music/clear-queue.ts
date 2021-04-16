@@ -1,4 +1,5 @@
 import {Message, MessageFlags} from "discord.js";
+import { Queue } from "../../typings/Queue";
 import { VariaClient } from "../../typings/VariaClient";
 
 module.exports = {
@@ -9,11 +10,12 @@ module.exports = {
     aliases: ['cq', 'clear'],
     cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient){
-        if (client.queue.length){
+        const queue : Queue = client.queue.get(message.guild.id);
+        if (queue.items.length){
             if (args.length){
-                client.queue.splice(0, parseInt(args[0]));
+                queue.items.splice(0, parseInt(args[0]));
             } else {
-                client.queue = [];
+                queue.items = [];
             }
         } else {
             message.reply('There is nothing to clear in the queue!');
