@@ -17,14 +17,17 @@ client.queue = new Map();
 client.currentlyPlaying = "";
 client.cooldowns = new Collection();
 
-const commandFolders = readdirSync('./src/commands');
+// get source dir for production or development build
+const sourceDir : string = process.env.NODE_ENV === "development" ? "./src" : "./dist"; 
+// get command folders
+const commandFolders = readdirSync(`${sourceDir}/commands`);
 
 /*
 * Read command files in directory `./src/commands`
 * Set commands in client.commands collection 
 */
 for (const folder of commandFolders){
-  const commandFiles = readdirSync(`./src/commands/${folder}`).filter((file: string) => {
+  const commandFiles = readdirSync(`${sourceDir}/commands/${folder}`).filter((file: string) => {
     if (file.endsWith('.ts') || file.endsWith('.js')){
       return file;
     }
