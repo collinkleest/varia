@@ -2,13 +2,24 @@
 *  Module imports
 */
 const {Client, Collection} = require("discord.js");
-import { debug } from 'console';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import dotenv from 'dotenv';
 import config from './config.json';
 import { Queue } from './typings/Queue';
 import { VariaClient } from './typings/VariaClient';
-const { readdirSync } =  require("fs");
+const http = require('http');
+const { readdirSync, createReadStream } =  require("fs");
+
+// get source dir for production or development build
+const sourceDir : string = process.env.NODE_ENV === "development" ? "./src" : "./dist"; 
+const serverPort : number = process.env.NODE_ENV === "development" ? 3000 : 443;
+
+// run basic http server for homepage
+const server = http.createServer( (req:any, res:any) => {
+  res.writeHead(200, {'content-type': 'text/html'});
+  createReadStream('./static/index.html').pipe(res);
+})
+
+server.listen(serverPort);
 
 const client : VariaClient = new Client();
 client.commands = new Collection();
@@ -17,8 +28,7 @@ client.queue = new Map();
 client.currentlyPlaying = "";
 client.cooldowns = new Collection();
 
-// get source dir for production or development build
-const sourceDir : string = process.env.NODE_ENV === "development" ? "./src" : "./dist"; 
+
 // get command folders
 const commandFolders = readdirSync(`${sourceDir}/commands`);
 
