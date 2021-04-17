@@ -37,6 +37,17 @@ Command List
 - **yarn run lint**: lints the project (`development`)
 - **yarn run lint:fix**: lints the project and fixes any errors (`development`)
 
+
+#
+
+## Environment Vars
+
+```
+DISCORD_TOKEN=<discord bot token>
+YT_API_KEY=<youtube/google developer api access key>
+PORT=<port number for homepage>
+```
+
 #
 
 
