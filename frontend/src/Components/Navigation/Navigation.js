@@ -34,7 +34,7 @@ class Navigation extends React.Component {
                 <div style={pullRight}>    
                     {this.props.navLinks.map((item) => {
                         return (
-                            <Typography variant="button" gutterBottom>
+                            <Typography variant="button" key={item.name} gutterBottom>
                                 <Link style={linkStyle} to={item.path}>
                                     {item.name}
                                 </Link>

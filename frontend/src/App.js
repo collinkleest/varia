@@ -22,7 +22,7 @@ class App extends React.Component {
                     <Switch>
                         {this.props.navLinks.map((item) => {
                             return(
-                                <Route exact path={item.path}>
+                                <Route exact path={item.path} key={item.name}>
                                     {item.component}
                                 </Route>
                             );
