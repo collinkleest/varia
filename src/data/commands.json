@@ -1,0 +1,139 @@
+{
+  "catagories": [
+    {
+      "name": "core",
+      "commands": [
+        {
+          "name": "help",
+          "description": "List all of my commands or info about a specific command.",
+          "aliases": [
+            "commands"
+          ],
+          "usage": "/help <command name>",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "reload",
+          "description": "Reloads a command",
+          "aliases": [
+            "r"
+          ],
+          "usage": "/reload <command to reload>",
+          "args": true,
+          "cooldown": 10
+        }
+      ]
+    },
+    {
+      "name": "music",
+      "commands": [
+        {
+          "name": "clearqueue",
+          "description": "Clears all items in the queue",
+          "aliases": [
+            "cq",
+            "clear"
+          ],
+          "usage": "/clearqueue <amount of items to clear>",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "currentlyplaying",
+          "description": "Display the currently playing song.",
+          "aliases": [
+            "playing",
+            "cp",
+            "playingnow"
+          ],
+          "usage": "/currentlyplating",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "pause",
+          "description": "Pause a song that is currently playing",
+          "aliases": [
+            "pa"
+          ],
+          "usage": "/pause",
+          "args": false,
+          "cooldown": 2
+        },
+        {
+          "name": "ping",
+          "description": "Ping Varia bot and get its ping in ms",
+          "aliases": [
+            "pi"
+          ],
+          "usage": "/ping",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "play",
+          "description": "Play a song with a given YouTube url < yt_uri : string>",
+          "aliases": [
+            "p"
+          ],
+          "usage": "/play <youtube url or song name>",
+          "args": true,
+          "cooldown": 5
+        },
+        {
+          "name": "queue",
+          "description": "View queue or queue a song to currently playing music",
+          "aliases": [
+            "q",
+            "vq"
+          ],
+          "usage": "/queue <youtube url> or <song name>",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "resume",
+          "description": "Resume a song that is has been paused",
+          "aliases": [
+            "r"
+          ],
+          "usage": "/resume",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "skip",
+          "description": "Skip song that is currently playing",
+          "aliases": [
+            "s"
+          ],
+          "usage": "/skip <song name> or <song url> or <queue position>",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "stop",
+          "description": "Stops song, removes from queue, and disconnects bot from music channel",
+          "aliases": [
+            "st"
+          ],
+          "usage": "/stop",
+          "args": false,
+          "cooldown": 5
+        },
+        {
+          "name": "volume",
+          "description": "Increase or decrease volume <decimal number>",
+          "aliases": [
+            "v",
+            "level"
+          ],
+          "usage": "/volume <number decimal>",
+          "args": false,
+          "cooldown": 0
+        }
+      ]
+    }
+  ]
+}

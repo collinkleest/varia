@@ -3,11 +3,11 @@
 */
 const {Client, Collection} = require("discord.js");
 import dotenv from 'dotenv';
-import config from './config.json';
+import config from './data/config.json';
 import { Queue } from './typings/Queue';
 import { VariaClient } from './typings/VariaClient';
 const http = require('http');
-const { readdirSync, createReadStream } =  require("fs");
+const { readdirSync, createReadStream, writeFileSync } =  require("fs");
 
 // load and set environment variables
 dotenv.config();
@@ -35,12 +35,18 @@ client.cooldowns = new Collection();
 
 // get command folders
 const commandFolders = readdirSync(`${sourceDir}/commands`);
-
+let commandsJson : any = {
+  catagories: []
+};
 /*
 * Read command files in directory `./src/commands`
 * Set commands in client.commands collection 
 */
 for (const folder of commandFolders){
+  let catagoryJson : any = {
+    name: folder,
+    commands: [] 
+  }
   const commandFiles = readdirSync(`${sourceDir}/commands/${folder}`).filter((file: string) => {
     if (file.endsWith('.ts') || file.endsWith('.js')){
       return file;
@@ -49,10 +55,21 @@ for (const folder of commandFolders){
   commandFiles.forEach((file: any) => {
     const command = require(`./commands/${folder}/${file}`);
     console.log(`Loading command ${file}`);
-    client.commands.set(command.name, command); 
-  });
-}
+    client.commands.set(command.name, command);
 
+    let commandData = {
+      name: command.name,
+      description: command.description,
+      aliases: command.aliases,
+      usage: command.usage,
+      args: command.args,
+      cooldown: command.cooldown,
+    };
+    catagoryJson.commands.push(commandData);
+  });
+  commandsJson.catagories.push(catagoryJson);
+}
+writeFileSync(`${sourceDir}/data/commands.json`, JSON.stringify(commandsJson, null, 2));
 
 
 
