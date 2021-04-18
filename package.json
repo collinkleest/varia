@@ -28,6 +28,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "discord.js": "^12.5.1",
+    "express": "^4.17.1",
     "ffmpeg-static": "^4.3.0",
     "opusscript": "^0.0.7",
     "ytdl-core": "^4.5.0"

@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import config from './data/config.json';
 import { Queue } from './typings/Queue';
 import { VariaClient } from './typings/VariaClient';
-const http = require('http');
+const express = require('express');
 const { readdirSync, createReadStream, writeFileSync } =  require("fs");
 
 // load and set environment variables
@@ -18,12 +18,9 @@ const SERVER_PORT : number =  process.env.NODE_ENV === "development" ?  3000 : p
 const sourceDir : string = process.env.NODE_ENV === "development" ? "./src" : "./dist"; 
 
 // run basic http server for homepage
-const server = http.createServer( (req:any, res:any) => {
-  res.writeHead(200, {'content-type': 'text/html'});
-  createReadStream('./static/index.html').pipe(res);
-})
-
-server.listen(SERVER_PORT);
+const expressApp = express();
+expressApp.use(express.static('./frontend/dist/'));
+expressApp.listen(SERVER_PORT);
 
 const client : VariaClient = new Client();
 client.commands = new Collection();
