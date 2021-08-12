@@ -1,21 +1,19 @@
-import { Collection, CollectorFilter, DiscordAPIError, Guild, Message, MessageEmbed, MessageReaction, ReactionCollector, User } from "discord.js";
+import { CollectorFilter, Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { VariaClient } from "../typings/VariaClient";
 import { YTData } from "../typings/YTData";
 import YTFactory from "./YTFactory";
 import { QueueItem } from "../typings/QueueItem";
 import { Queue } from "../typings/Queue";
 import { millisToMinutesAndSeconds } from "../utils/timeutils"; 
-const ytdl =  require("ytdl-core");
+import ytdl from "ytdl-core";
 
 
 class MusicPlayer {
 
-    constructor(){}
-
     static async play(client: VariaClient, message: Message): Promise<void>{
         const guildId = message.guild?.id;
-        let queue : Queue | undefined = client.queue.get(guildId);
-        let queueItems : QueueItem[] | undefined = client.queue.get(guildId)?.items;
+        const queue : Queue | undefined = client.queue.get(guildId);
+        const queueItems : QueueItem[] | undefined = client.queue.get(guildId)?.items;
         if (!queueItems || !queue ){return;}
         // make sure the queue is empty
         if (queueItems.length){
@@ -26,6 +24,7 @@ class MusicPlayer {
                     queue.connection =  await message.member?.voice.channel?.join();
                 }
                 queue.dispatcher = queue.connection?.play(ytdl(queueItems[0].url));
+                queue.dispatcher.setVolume(.2); 
                 queueItems[0].isPlaying = true;
                 queue.dispatcher?.on('finish', () => {
                     if (!queueItems){return;}
@@ -33,7 +32,7 @@ class MusicPlayer {
                     queueItems[0].isPlaying = false;
                     queueItems.shift();
                     this.play(client, message);
-                })
+                });
                 this.playSuccess(message, queueItems[0].name, client);
             } 
         } else {
@@ -74,8 +73,7 @@ class MusicPlayer {
     static async playSuccess(message: Message, songTitle: string, client: VariaClient){
         const {author: {username}} = message;
         message.client.user?.setActivity(songTitle, {type: "LISTENING"});
-        let messageEmbed = this.buildEmbed(message, songTitle, client);
-        // let newMessage : Message;
+        const messageEmbed = this.buildEmbed(message, songTitle, client);
         message.channel.send(messageEmbed).then((msg) => {
             msg.react('▶');
             msg.react('⏸️');
@@ -142,7 +140,6 @@ class MusicPlayer {
             console.log(`${username} tried to play music when not in a voice channel`);
             return false;
         }
-        return true;
     }
 }
 

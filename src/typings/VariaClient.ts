@@ -3,7 +3,7 @@ import { Command } from "./Command";
 import { Queue } from './Queue';
 
 interface VariaClient extends Client {
-    commands: Collection<String, Command>;
+    commands: Collection<string, Command>;
     queue: Map<string, Queue>;
     prefix: string;
     currentlyPlaying: string;

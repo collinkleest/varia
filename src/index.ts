@@ -1,13 +1,14 @@
 /*
 *  Module imports
 */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const {Client, Collection} = require("discord.js");
 import dotenv from 'dotenv';
 import config from './data/config.json';
 import { Queue } from './typings/Queue';
 import { VariaClient } from './typings/VariaClient';
-const express = require('express');
-const { readdirSync, createReadStream, writeFileSync } =  require("fs");
+import express from 'express';
+import { readdirSync, writeFileSync } from "fs";
 
 // load and set environment variables
 dotenv.config();
@@ -32,7 +33,7 @@ client.cooldowns = new Collection();
 
 // get command folders
 const commandFolders = readdirSync(`${sourceDir}/commands`);
-let commandsJson : any = {
+const commandsJson : any = {
   catagories: []
 };
 /*
@@ -40,21 +41,22 @@ let commandsJson : any = {
 * Set commands in client.commands collection 
 */
 for (const folder of commandFolders){
-  let catagoryJson : any = {
+  const catagoryJson : any = {
     name: folder,
     commands: [] 
-  }
+  };
   const commandFiles = readdirSync(`${sourceDir}/commands/${folder}`).filter((file: string) => {
     if (file.endsWith('.ts') || file.endsWith('.js')){
       return file;
     }
   });
   commandFiles.forEach((file: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const command = require(`./commands/${folder}/${file}`);
     console.log(`Loading command ${file}`);
     client.commands.set(command.name, command);
 
-    let commandData = {
+    const commandData = {
       name: command.name,
       description: command.description,
       aliases: command.aliases,
@@ -99,10 +101,10 @@ client.on('message', async (message : any) => {
   const args: string[] = message.content.slice(client.prefix.length).trim().split(/ +/);
   
   // takes first element in array and returns it but also removes the first element from the array
-  const commandName: String = String(args.shift()?.toLowerCase());
+  const commandName = String(args.shift()?.toLowerCase());
 
   const command = client.commands.get(commandName) || client.commands.find((cmd: any) => {
-    return cmd.aliases && cmd.aliases.includes(commandName)
+    return cmd.aliases && cmd.aliases.includes(commandName);
   });
 
   if (!command){return;}
