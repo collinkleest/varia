@@ -103,6 +103,17 @@
           "cooldown": 5
         },
         {
+          "name": "search",
+          "description": "Search YouTube for a song",
+          "aliases": [
+            "find",
+            "query"
+          ],
+          "usage": "/search <song name>",
+          "args": true,
+          "cooldown": 5
+        },
+        {
           "name": "skip",
           "description": "Skip song that is currently playing",
           "aliases": [

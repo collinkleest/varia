@@ -10,7 +10,7 @@ module.exports = {
     aliases: ['p'],
     cooldown: 5,
     async execute(message: Message, args: string[], client: VariaClient) {
-        let commandArguments: string = args.join(' ');
+        const commandArguments: string = args.join(' ');
         if (!(commandArguments.includes("youtube.com"))){
             MusicPlayer.playSongByKeywords(message, args, client);
         } else {
