@@ -6,9 +6,9 @@ import { YTData } from "../../typings/YTData";
 import { durationToString, millisToMinutesAndSeconds, playtimeToString } from '../../utils/timeutils';
 
 const buildQueueEmbed = (client : VariaClient, message: Message): MessageEmbed => {
-    let descriptionText : string = '';
-    let footerText : string = '';
-    let queueDuration : number = 0;   
+    let descriptionText = '';
+    const footerText = '';
+    let queueDuration  = 0;   
     client.queue.get(message.guild?.id)?.items.forEach( (queueItem: QueueItem, index: number) => {
         let description = index+1 + ' : [' + queueItem.name + ']' + '(' + queueItem.url + ')';
         description += '``' + (queueItem.isPlaying ? playtimeToString(client.queue.get(message.guild?.id)?.dispatcher?.streamTime, queueItem.duration) : durationToString(queueItem.duration)) + '``';  
@@ -47,9 +47,9 @@ module.exports = {
                 return;
             }
         } else {
-            let commandArguments: string = args.join(' ');
+            const commandArguments: string = args.join(' ');
             if (!(commandArguments.includes("youtube.com"))){
-                let ytData: YTData = await YTFactory.getSongDataByName(commandArguments);
+                const ytData: YTData = await YTFactory.getSongDataByName(commandArguments);
                 if (ytData){
                     client.queue.get(guildId)?.items.push(new QueueItem(ytData.title, ytData.url, ytData.thumbnail, message.author.username, ytData.duration, false));
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
@@ -57,7 +57,7 @@ module.exports = {
                     message.reply('Could not queue your song'); 
                 }
             } else {
-                let ytData: YTData = await YTFactory.getSongDataById(commandArguments);
+                const ytData: YTData = await YTFactory.getSongDataById(commandArguments);
                 if (ytData){
                     client.queue.get(guildId)?.items.push(new QueueItem(ytData.title, ytData.url, ytData.thumbnail, message.author.username, ytData.duration, false));
                     message.channel.send(`${message.author.id} queued ${ytData.title}`);
